@@ -1,30 +1,16 @@
-Intro: This readme is covering several parts of functionality within a
-framework built within Aptos Dark Country grant program. Also there are
-scripts on how it is set up for the Dark Country project.
+Intro: This readme is covering several parts of functionality within a framework built within Aptos Dark Country grant program. Also there are scripts on how it is set up for the Dark Country project.
 
-Purpose: A purpose of this project was to create appropriate smart
-contracts for Dark Country game launch on Aptos blockchain. However,
-this approach can be re-used as a framework by any web3 project or game.
+Purpose: A purpose of this project was to create appropriate smart contracts for Dark Country game launch on Aptos blockchain. However, this approach can be re-used as a framework by any web3 project or game.
 
-So called framework has following modules and parts: \* Templates
-approach for tokens(NFTs). What it gives us is an errorless approach on
-creating new types of items. In practice it is important for gaming
-NFTs, where you have game items with stats and parameters that are
-reused, so you don\'t need to enter them all the time when creating
-them. \* Unpacking of NFTs that are packs of items. Suppose we have NFT
-as a pack of 5 cards, where all cards are set up as templates, and those
-also have defined chances per every template setup. In our example we
-will have say 60% to receive one of Common card templates, or Rare cards
-with 30% chance, and so on. \* Drops or Initial sale. This is designed
-to perform the sale of NFT items or packs by appropriate rules. Drop is
-set up with a number of parameters, such as name, description, start
-time, end time, amount to sell and price. This will ensure drops can
-program ways projects can sell items to users. In our examples we will
-set up a sale of NFT packs that users can unpack in our interface too.
-\* Staking of Items. Staking was a core mechanic in our game on other
-blockchains, there are benefits of doing, such as scarcity of items that
-will leave marketplaces, providing rewards to those who stake items.
-Such as lands, cards and heroes.
+So called framework has following modules and parts: 
+
+-   Templates approach for tokens(NFTs). What it gives us is an errorless approach on creating new types of items. In practice it is important for gaming NFTs, where you have game items with stats and parameters that are reused, so you don't need to enter them all the time when creating them.
+
+-   Unpacking of NFTs that are packs of items. Suppose we have NFT as a pack of 5 cards, where all cards are set up as templates, and those also have defined chances per every template setup. In our example we will have say 60% to receive one of Common card templates, or Rare cards with 30% chance, and so on.
+
+-   Drops or Initial sale. This is designed to perform the sale of NFT items or packs by appropriate rules. Drop is set up with a number of parameters, such as name, description, start time, end time, amount to sell and price. This will ensure drops can program ways projects can sell items to users. In our examples we will set up a sale of NFT packs that users can unpack in our interface too.
+
+-   Staking of Items. Staking was a core mechanic in our game on other blockchains, there are benefits of doing, such as scarcity of items that will leave marketplaces, providing rewards to those who stake items. Such as lands, cards and heroes.
 
 This general description of what you can find below, and good base code
 to adapt per your needs. However even now it is very generalized and can
