@@ -12,38 +12,41 @@ So called framework has following modules and parts: 
 
 -   Staking of Items. Staking was a core mechanic in our game on other blockchains, there are benefits of doing, such as scarcity of items that will leave marketplaces, providing rewards to those who stake items. Such as lands, cards and heroes.
 
-This general description of what you can find below, and good base code
-to adapt per your needs. However even now it is very generalized and can
-be used as is by many projects.
+This general description of what you can find below, and good base code to adapt per your needs. However even now it is very generalized and can be used as is by many projects.
 
-Part 1: Smart Contracts. This part includes description of all smart
-contracts(modules) built within the described purpose. This part also
-includes test coverage and setup scripts for Dark Country assets. Part 1
-is described below.
+Part 1:  Smart Contracts. This part includes description of all smart contracts(modules) built within the described purpose. This part also includes test coverage and setup scripts for Dark Country assets. Part 1 is described below.
 
-Part 2: Demo website. A website that practically does all we can with
-those smart contracts, along with provided demo assets, demo NFT pack
-drops, staking and unpacking of NFT packs. Part 2 can be found in this
-repository. Demo website for testnet can be found here
-https://aptos-dark.vercel.app/
+Part 2: Demo website. A website that practically does all we can with those smart contracts, along with provided demo assets, demo NFT pack drops, staking and unpacking of NFT packs. Part 2 can be found in this repository. Demo website for testnet can be found here <https://aptos-dark.vercel.app/>
 
 Let's dive in:
-
 Part 1. Smart Contracts.
 
-Note. A testnet contract is deployed at
-0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303
-address, if you like to have a look and play with it as end user,
-however we offer demo website that also showcases all of the
-functionality.
+Part 1. Smart Contracts. 
+-------------------------
 
-A. templates - module that stores and provides access to all templates.
-The main structure used by this module is Template
+Note. A testnet contract is deployed at 0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303 address, if you like to have a look and play with it as end user, however we offer demo website that also showcases all of the functionality.
 
-struct Template has store, drop, copy { id: u64, name: String,
-description: String, uri: String, property_names: vector\<String\>,
-property_types: vector\<String\>, property_values_bytes:
-vector\<vector\<u8\>\> }
+A. templates - module that stores and provides access to all templates. The main structure used by this module is Template
+
+struct  Template  has  store, drop, copy
+
+{
+
+id: u64,
+
+name: String,
+
+description: String,
+
+uri: String,
+
+property_names: vector<String>,
+
+property_types: vector<String>,
+
+property_values_bytes: vector<vector<u8>>
+
+}
 
 property_names - імена полів токену property_types - типи полів токену
 property_values_bytes - значення полів токену
