@@ -52,16 +52,13 @@ property_values_bytes: vector<vector<u8>>
 
 ```
 
-property_names - імена полів токену property_types - типи полів токену
-property_values_bytes - значення полів токену
+For example, if we want to create a Rectangle token with fields height=6 and width=8, then the corresponding arrays will be as follows (the format and method toBytes() below are conditional). All fields in templates created with templates::add_templates are of type String.
 
-Наприклад, якщо хочемо створити токен Rectangle з полями height=6 та
-width=8, то відповідні масиви будуть наступні (формат та метод toBytes()
-нижче - умовні). Усі поля у шаблонах, створених за допомогою
-templates::add_templates, мають тип String.
+property_names = ["height", "width"]
 
-property_names = \[\"height\", \"width\"\] property_types = \[\"u64\",
-\"u64\"\] property_values_bytes = \[toBytes(6), toBytes(8)\]
+property_types = ["u64", "u64"]
+
+property_values_bytes = [toBytes(6), toBytes(8)]
 
 \[main method\] templates::add_template(creator: &signer, template_id:
 u64, name: String, description: String, uri: String, property_names:
