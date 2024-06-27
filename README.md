@@ -28,6 +28,8 @@ Note. A testnet contract is deployed at 0x1ac6713de2cf42540ec69783ed0efe12e363fc
 
 A. templates - module that stores and provides access to all templates. The main structure used by this module is Template
 
+```
+
 struct  Template  has  store, drop, copy
 
 {
@@ -47,6 +49,8 @@ property_types: vector<String>,
 property_values_bytes: vector<vector<u8>>
 
 }
+
+```
 
 property_names - імена полів токену property_types - типи полів токену
 property_values_bytes - значення полів токену
