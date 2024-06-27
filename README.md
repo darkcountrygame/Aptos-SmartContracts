@@ -6,25 +6,25 @@ Purpose: A purpose of this project was to create appropriate smart
 contracts for Dark Country game launch on Aptos blockchain. However,
 this approach can be re-used as a framework by any web3 project or game.
 
-So called framework has following modules and parts: ● Templates
+So called framework has following modules and parts: \* Templates
 approach for tokens(NFTs). What it gives us is an errorless approach on
 creating new types of items. In practice it is important for gaming
 NFTs, where you have game items with stats and parameters that are
 reused, so you don\'t need to enter them all the time when creating
-them. ● Unpacking of NFTs that are packs of items. Suppose we have NFT
+them. \* Unpacking of NFTs that are packs of items. Suppose we have NFT
 as a pack of 5 cards, where all cards are set up as templates, and those
 also have defined chances per every template setup. In our example we
 will have say 60% to receive one of Common card templates, or Rare cards
-with 30% chance, and so on. ● Drops or Initial sale. This is designed to
-perform the sale of NFT items or packs by appropriate rules. Drop is set
-up with a number of parameters, such as name, description, start time,
-end time, amount to sell and price. This will ensure drops can program
-ways projects can sell items to users. In our examples we will set up a
-sale of NFT packs that users can unpack in our interface too. ● Staking
-of Items. Staking was a core mechanic in our game on other blockchains,
-there are benefits of doing, such as scarcity of items that will leave
-marketplaces, providing rewards to those who stake items. Such as lands,
-cards and heroes.
+with 30% chance, and so on. \* Drops or Initial sale. This is designed
+to perform the sale of NFT items or packs by appropriate rules. Drop is
+set up with a number of parameters, such as name, description, start
+time, end time, amount to sell and price. This will ensure drops can
+program ways projects can sell items to users. In our examples we will
+set up a sale of NFT packs that users can unpack in our interface too.
+\* Staking of Items. Staking was a core mechanic in our game on other
+blockchains, there are benefits of doing, such as scarcity of items that
+will leave marketplaces, providing rewards to those who stake items.
+Such as lands, cards and heroes.
 
 This general description of what you can find below, and good base code
 to adapt per your needs. However even now it is very generalized and can
@@ -41,7 +41,7 @@ drops, staking and unpacking of NFT packs. Part 2 can be found in this
 repository. Demo website for testnet can be found here
 https://aptos-dark.vercel.app/
 
-Let\'s dive in:
+Let's dive in:
 
 Part 1. Smart Contracts.
 
@@ -142,8 +142,8 @@ generate those packs.
 Since the aptos standard library does not support serialization of the
 float type, the generation chances should be read as follows.
 
-common_chance = common / (common + rare + \...) = 619 / 1000 = 61.9%
-rare_chance = rare / (common + \...) = 310 / 1000 = 31%
+common_chance = common / (common + rare + ...) = 619 / 1000 = 61.9%
+rare_chance = rare / (common + ...) = 310 / 1000 = 31%
 
 \[main method\] unpacking::unpack(account: &signer, pack_token:
 String) - burns pack_token (account must own it) and generates templates
@@ -266,7 +266,7 @@ JS Code examples on how to use every module that is described.
 
 1\. Templates
 
-a\. template::get_template(template_id=100)
+1\. template::get_template(template_id=100)
 
 const unpackedTokens = await aptos.view({ payload: { function:
 \`\${module_address}::templates::get_template\`, typeArguments: \[\],
@@ -274,7 +274,7 @@ functionArguments: \[100\], }, });
 
 2\. Minting process
 
-a\. minter::mint_template(account=owner_account, to=owner_address,
+1\. minter::mint_template(account=owner_account, to=owner_address,
 template_id=365) onst transaction = await
 aptos.transaction.build.simple( { sender: owner_account.accountAddress,
 data: { function: \`\${module_address}::minter::mint_template\`,
@@ -282,69 +282,69 @@ functionArguments: \[ owner_address, 355 \] } } );
 
 3\. Staking
 
-a\. staking::stake_tokens const transaction = await
+1\. staking::stake_tokens const transaction = await
 aptos.transaction.build.simple( { sender: owner_account.accountAddress,
 data: { function: \`\${module_address}::staking::stake_tokens\`,
 functionArguments: \[ \[\"#11\", \"#9\"\] \] } } );
 
-b\. staking::unstake_tokens const transaction = await
+2\. staking::unstake_tokens const transaction = await
 aptos.transaction.build.simple( { sender: owner_account.accountAddress,
 data: { function: \`\${module_address}::staking::unstake_tokens\`,
 functionArguments: \[ \[\"#11\", \"#9\"\] \] } } );
 
-c\. staking::get_staked_tokens const unpackedTokens = await aptos.view({
+3\. staking::get_staked_tokens const unpackedTokens = await aptos.view({
 payload: { function: \`\${module_address}::staking::get_staked_tokens\`,
 typeArguments: \[\], functionArguments:
 \[owner_account.accountAddress\], }, });
 
 4\. Unpacking
 
-a\. unpacking::unpack const transaction = await
+1\. unpacking::unpack const transaction = await
 aptos.transaction.build.simple( { sender: owner_account.accountAddress,
 data: { function: \`\${module_address}::unpacking::unpack\`,
 functionArguments: \[ pack_token_name \] } } );
 
-b\. unpacking::claim const transaction = await
+2\. unpacking::claim const transaction = await
 aptos.transaction.build.simple( { sender: owner_account.accountAddress,
 data: { function: \`\${module_address}::unpacking::claim\`,
 functionArguments: \[
 
 \] } } );
 
-c\. unpacking::get_unpacked_tokens const unpackedTokens = await
+3\. unpacking::get_unpacked_tokens const unpackedTokens = await
 aptos.view({ payload: { function:
 \`\${module_address}::unpacking::get_unpacked_tokens\`, typeArguments:
 \[\], functionArguments: \[owner_account.accountAddress\], }, });
 
 5\. Drops
 
-a\. drops::create_sale const transaction = await
+1\. drops::create_sale const transaction = await
 aptos.transaction.build.simple( { sender: owner_account.accountAddress,
 data: { function: \`\${module_address}::drops::create_sale\`,
 functionArguments: \[ \"test\", \"descr\", 0, 0, 4, 153, 1000 \] } } );
 
-b\. drops::buy const transaction = await aptos.transaction.build.simple(
+2\. drops::buy const transaction = await aptos.transaction.build.simple(
 { sender: not_owner_account.accountAddress, data: { function:
 \`\${module_address}::drops::buy\`, functionArguments: \[ sale_id \] } }
 );
 
-c\. drops::buy_multiple const transaction = await
+3\. drops::buy_multiple const transaction = await
 aptos.transaction.build.simple( { sender:
 not_owner_account.accountAddress, data: { function:
 \`\${module_address}::drops::buy_multiple\`, functionArguments: \[
 sale_id, 4 \] } } );
 
-d\. drops::get_sales const allSales = await aptos.view({ payload: {
+4\. drops::get_sales const allSales = await aptos.view({ payload: {
 function: \`\${module_address}::drops::get_sales\`, typeArguments: \[\],
 functionArguments: \[\], }, });
 
-e\. drops::update_sale_name const transaction = await
+5\. drops::update_sale_name const transaction = await
 aptos.transaction.build.simple( { sender:
 not_owner_account.accountAddress, data: { function:
 \`\${module_address}::drops::update_sale_name\`, functionArguments: \[
 sale_id, \"Some New Name\" \] } } );
 
-f\. drops::delete_sale const transaction = await
+6\. drops::delete_sale const transaction = await
 aptos.transaction.build.simple( { sender:
 not_owner_account.accountAddress, data: { function:
 \`\${module_address}::drops::delete_sale\`, functionArguments: \[
