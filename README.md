@@ -26,7 +26,7 @@ Part 1. Smart Contracts. 
 
 Note. A testnet contract is deployed at **0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303** address, if you like to have a look and play with it as end user, however we offer demo website that also showcases all of the functionality.
 
-A. templates - module that stores and provides access to all templates. The main structure used by this module is Template
+**A. templates** - module that stores and provides access to all templates. The main structure used by this module is Template
 
 ```
 struct  Template  has  store, drop, copy
@@ -51,7 +51,7 @@ property_values_bytes = [toBytes(6), toBytes(8)]
 
 - adds new template, can be called only by contract owner.
 ```
-templates::add_template(creator: &signer, template_id:
+[main method] templates::add_template(creator: &signer, template_id:
 u64, name: String, description: String, uri: String, property_names:
 vector <String>, property_values: vector <String>)
 ```
@@ -59,7 +59,9 @@ vector <String>, property_values: vector <String>)
 - returns the fields of
 the template according to the given id (Template structure)
 
-```templates::get_template(id: u64) ```
+```
+[view method] templates::get_template(id: u64)
+```
 
 Example of returned values templates::get_template(id=100)
 ```
@@ -86,14 +88,14 @@ Example of returned values templates::get_template(id=100)
 }
 ```
 
-B. Minter - module responsible for token minting, other modules refer to
+**B. Minter** - module responsible for token minting, other modules refer to
 it
 
  - minting the token according to the template_id to
 the address to. Can only be called by the contract owner and other
 modules.
 ```
-minter::mint_template(account: &signer, to: address,
+[main method] minter::mint_template(account: &signer, to: address,
 template_id: u64)
 ```
 
@@ -103,30 +105,50 @@ address of the account to which the collection is registered.
 [view method] minter::get_collection_creator_object() 
 ```
 
-C. Staking - module for staking and unstaking of tokens(NFTs). Staking
+**C. Staking** - module for staking and unstaking of tokens(NFTs). Staking
 means transferring tokens to contract account.
 
-\[main method\] staking::stake_tokens(account: &signer, tokens:
-vector\<String\>) - stacks all tokens provided in the tokens array
+- stacks all tokens provided in the tokens array
 (account must own them in order to stake).
+```
+[main method] staking::stake_tokens(account: &signer, tokens:
+vector<String>) 
+```
 
-\[main method\] staking::unstake_tokens(account: &signer, tokens:
-vector\<String\>) - returns account those of the std tokens provided in
+- returns account those of the std tokens provided in
 the tokens array.
+```
+[main method] staking::unstake_tokens(account: &signer, tokens:
+vector<String>)
+```
 
-\[view method\] staking::get_staked_tokens(account: address) - returns
-an array of account user tokens currently staked on the contract. Each
+- returns an array of account user tokens currently staked on the contract. Each
 element of the array is a token name and its pattern.
+```
+[view method] staking::get_staked_tokens(account: address)
+```
 
 Example of a returned value staking::get_staked_tokens(account=\...)
 
-\[ { \"name\": \"#9\", \"template_id\": \"142\" }, { \"name\": \"#11\",
-\"template_id\": \"26\" } \]
+```
+[
+  {
+    "name": "#9",
+    "template_id": "142"
+  },
+  {
+    "name": "#11",
+    "template_id": "26"
+  }
+]
+```
 
-\[view method\] staking::get_staker_object_addr() - returns the address
-where the staked tokens are stored
+- returns the address where the staked tokens are stored
+```
+[view method] staking::get_staker_object_addr()
+```
 
-D. unpacking - the module responsible for unpacking any type of tokens
+**D. Unpacking** - the module responsible for unpacking any type of tokens
 that has items inside.
 
 Every NFT/token in our case has a type, so those are card, hero, land
@@ -134,13 +156,13 @@ and pack.
 
 So packs in our case has such properties:
 
-quantity - number of generated tokens. In our case, 5 tokens are
+- **quantity** - number of generated tokens. In our case, 5 tokens are
 generated during unpacking.
 
-packtype - pack type (heroes/cards). In this case, only cards will be
-generated.
+- **packtype - pack type (heroes/cards). In this case, only cards will be
+**generated.
 
-common/rare/epic/legendary/mythical - are fields showing a chance to
+- **common/rare/epic/legendary/mythical** - are fields showing a chance to
 generate those packs.
 
 Since the aptos standard library does not support serialization of the
@@ -149,47 +171,83 @@ float type, the generation chances should be read as follows.
 common_chance = common / (common + rare + ...) = 619 / 1000 = 61.9%
 rare_chance = rare / (common + ...) = 310 / 1000 = 31%
 
-\[main method\] unpacking::unpack(account: &signer, pack_token:
-String) - burns pack_token (account must own it) and generates templates
+- burns pack_token (account must own it) and generates templates
 according to pack parameters. To receive tokens, the user must call a
 claim. Claim is used to prevent users re-try getting better results of
 unpacking.
+```
+[main method] unpacking::unpack(account: &signer, pack_token:
+String)
+```
 
-\[main method\] unpacking::claim(account: &signer) - each of the
+- each of the
 templates that were generated by the unpack() method is mangled and sent
 to account
+```
+[main method] unpacking::claim(account: &signer)
+```
 
-\[view method\] unpacking::get_unpacked_tokens(account: address) -
-returns the templates generated by the unpack() method;
+ - returns the templates generated by the unpack() method;
+```
+[view method] unpacking::get_unpacked_tokens(account: address)
+```
 
 Example of values returned: unpacking::get_unpacked_tokens(account=\...)
 
-\[ \"101\", \"96\", \"100\", \"96\", \"96\" \]
+```
+[
+  "101",
+  "96",
+  "100",
+  "96",
+  "96"
+]
+```
 
-\[view method\] unpacking::get_unpacker_object_addr() -returns the
-address on behalf of which claim mints tokens
+-returns the address on behalf of which claim mints tokens
+```
+[view method] unpacking::get_unpacker_object_addr() 
+```
 
-E.Drops - selling tokens/NFTs. In our case we are showcasing how to
+**E. Drops** - selling tokens/NFTs. In our case we are showcasing how to
 setup initial sale of NFT packs.
 
 Main structure in this module is - Sale.
 
-struct Sale has copy, drop, store { id: u64, start_time: u64, end_time:
-u64, count: u64, template_id: u64, price: u64, name: String,
-description: String, }
+```
+struct Sale has copy, drop, store
+{
+   id: u64,
+   start_time: u64,
+   end_time: u64,
+   count: u64,
+   template_id: u64,
+   price: u64,
+   name: String,
+   description: String,
+}
+```
 
-\[main method\] drops::create_sale(account: &signer, name: String,
-description: String, start_time: u64, end_time: u64, count: u64,
-template_id: u64, price: u64) - creates a new sale with the specified
+- creates a new sale with the specified
 parameters. Can only be invoked by a contract.
+```
+[main method] drops::create_sale(account: &signer, name: String,
+description: String, start_time: u64, end_time: u64, count: u64,
+template_id: u64, price: u64)
+```
 
-\[main method\] drops::delete_sale(account: &signer, id: u64) - deletes
-the sale with the given id. Can only be invoked by a contract
+ - deletes the sale with the given id. Can only be invoked by a contract
+```
+[main method] drops::delete_sale(account: &signer, id: u64)
+```
 
-\[main method\] drops::buy(buyer: &signer, id: u64) - buy a token from
+- buy a token from
 this sale. The token is exchanged and sent to the buyer. The count field
 of this sale is reduced by 1. If count = 0 at the time of calling the
 buy() method, an error is returned.
+```
+[main method] drops::buy(buyer: &signer, id: u64)
+```
 
 \[main method\] drops::buy_multiple(buyer: &signer, id: u64, count:
 u64) - actually call buy() sount times. Condition for correct execution:
