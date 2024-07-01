@@ -49,9 +49,12 @@ property_types = ["u64", "u64"]
 property_values_bytes = [toBytes(6), toBytes(8)]
 ```
 
+```
 \[main method\] templates::add_template(creator: &signer, template_id:
 u64, name: String, description: String, uri: String, property_names:
-vector\<String\>, property_values: vector\<String\>) - adds new
+vector\<String\>, property_values: vector\<String\>)
+```
+- adds new
 template, can be called only by contract owner.
 
 \[view method\] templates::get_template(id: u64) - returns the fields of
