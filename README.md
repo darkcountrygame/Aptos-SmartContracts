@@ -16,10 +16,9 @@ This general description of what you can find below, and good base code to adapt
 
 Part 1:  Smart Contracts. This part includes description of all smart contracts(modules) built within the described purpose. This part also includes test coverage and setup scripts for Dark Country assets. Part 1 is described below.
 
-Part 2: Demo website. A website that practically does all we can with those smart contracts, along with provided demo assets, demo NFT pack drops, staking and unpacking of NFT packs. Part 2 can be found in this repository. Demo website for testnet can be found here <https://aptos-dark.vercel.app/>
+Part 2: Demo website. A website that practically does all we can with those smart contracts, along with provided demo assets, demo NFT pack drops, staking and unpacking of NFT packs. Part 2 can be found in this repository. Demo website for testnet can be found here <https://aptos-dark.vercel.app/>, source code can be found here <https://github.com/darkcountrygame/AptosDemoWebsite>
 
 Let's dive in:
-Part 1. Smart Contracts.
 
 Part 1. Smart Contracts. 
 -------------------------
