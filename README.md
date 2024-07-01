@@ -159,8 +159,8 @@ So packs in our case has such properties:
 - **quantity** - number of generated tokens. In our case, 5 tokens are
 generated during unpacking.
 
-- **packtype - pack type (heroes/cards). In this case, only cards will be
-**generated.
+- **packtype** - pack type (heroes/cards). In this case, only cards will be
+generated.
 
 - **common/rare/epic/legendary/mythical** - are fields showing a chance to
 generate those packs.
@@ -249,53 +249,76 @@ buy() method, an error is returned.
 [main method] drops::buy(buyer: &signer, id: u64)
 ```
 
-\[main method\] drops::buy_multiple(buyer: &signer, id: u64, count:
-u64) - actually call buy() sount times. Condition for correct execution:
+- actually call buy() sount times. Condition for correct execution:
 the count field of this sale \>= the count parameter
+```
+[main method] drops::buy_multiple(buyer: &signer, id: u64, count:
+u64)
+```
 
-The methods listed below update the fields of the specified sale. They
+Methods listed below update the fields of the specified sale. They
 can only be called by the contract owner
 
-\[main method\] drops::update_sale_name(account: &signer, id: u64,
+```
+[main method] drops::update_sale_name(account: &signer, id: u64,
 new_name: String)
 
-\[main method\] drops::update_sale_description(account: &signer, id:
+[main method] drops::update_sale_description(account: &signer, id:
 u64, new_description: String)
 
-\[main method\] drops::update_sale_time(account: &signer, id: u64,
+[main method] drops::update_sale_time(account: &signer, id: u64,
 new_start_time: u64, new_end_time: u64)
 
-\[main method\] drops::update_sale_count(account: &signer, id: u64,
+[main method] drops::update_sale_count(account: &signer, id: u64,
 new_count: u64)
 
-\[main method\] drops::update_sale_price(account: &signer, id: u64,
+[main method] drops::update_sale_price(account: &signer, id: u64,
 new_price: u64)
 
-\[main method\] drops::update_sale_template(account: &signer, id: u64,
+[main method] drops::update_sale_template(account: &signer, id: u64,
 new_template_id: u64)
 
-\[view method\] drops::get_sales() - returns all undeleted drops/sales.
+[view method] drops::get_sales() - returns all undeleted drops/sales.
+```
 
 Example of a returned value drops::get_sales()
 
-\[ { \"count\": \"3\", \"description\": \"Pack contains 5 cards. \\nPack
-chances: \\n-c-Common 61.9% \\n-r-Rare 31% \\n-e-Epic 6% \\n-l-Legendary
-1% \\n-m-Mythical 0.1% \\n\", \"end_time\": \"0\", \"id\":
-\"1719398342847267\", \"name\": \"Changelings Pack\", \"price\":
-\"1000\", \"start_time\": \"0\", \"template_id\": \"355\" }, {
-\"count\": \"0\", \"description\": \"descr\", \"end_time\": \"0\",
-\"id\": \"1719449413167866\", \"name\": \"test\", \"price\": \"1000\",
-\"start_time\": \"0\", \"template_id\": \"153\" },
+```
+[
+  {
+    "count": "3",
+    "description": "Pack contains 5 cards. \nPack chances: \n-c-Common 61.9% \n-r-Rare 31% \n-e-Epic 6% \n-l-Legendary 1% \n-m-Mythical 0.1% \n",
+    "end_time": "0",
+    "id": "1719398342847267",
+    "name": "Changelings Pack",
+    "price": "1000",
+    "start_time": "0",
+    "template_id": "355"
+  },
+  {
+    "count": "0",
+    "description": "descr",
+    "end_time": "0",
+    "id": "1719449413167866",
+    "name": "test",
+    "price": "1000",
+    "start_time": "0",
+    "template_id": "153"
+  },
+]
+```
 
-\]
+- returns the address on behalf of which this module mints tokens
+```
+[view method] drops::get_signer_obj_addr()
+```
 
-\[view method\] drops::get_signer_obj_addr() - returns the address on
-behalf of which this module mints tokens
 
-\[JS examples of calling module methods\]
+**JS examples of calling module methods**
 
 Modules required to set up work with Aptos.
 
+```
 import { Aptos, AptosConfig, Network, Account, Ed25519PrivateKey} from
 \"@aptos-labs/ts-sdk\";
 
@@ -310,16 +333,19 @@ const owner_address =
 const owner_private_key = new Ed25519PrivateKey(PRIVATE_KEY); const
 owner_account = Account.fromPrivateKey({ privateKey: owner_private_key
 });
+```
 
 How transactions are built and executed
 
 Each transaction in the examples provided will be created using the
-transaction = aptos.transaction.build.simple() method. After that, the
+```transaction = aptos.transaction.build.simple()``` method. After that, the
 same code will be called:
 
+```
 const senderAuth = await aptos.signAndSubmitTransaction({ signer:
 owner_account, transaction }); const response = await
 aptos.waitForTransaction({ transactionHash: senderAuth.hash, });
+```
 
 Note on View Methods. These methods do not need to create, sign and wait
 for a transaction, but are called using aptos.view().
