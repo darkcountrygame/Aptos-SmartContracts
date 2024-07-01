@@ -49,26 +49,41 @@ property_types = ["u64", "u64"]
 property_values_bytes = [toBytes(6), toBytes(8)]
 ```
 
+- adds new template, can be called only by contract owner.
 ```
-\[main method\] templates::add_template(creator: &signer, template_id:
+templates::add_template(creator: &signer, template_id:
 u64, name: String, description: String, uri: String, property_names:
-vector\<String\>, property_values: vector\<String\>)
+vector <String>, property_values: vector <String>)
 ```
-- adds new
-template, can be called only by contract owner.
 
-\[view method\] templates::get_template(id: u64) - returns the fields of
+- returns the fields of
 the template according to the given id (Template structure)
+```templates::get_template(id: u64) ```
 
 Example of returned values templates::get_template(id=100)
-
-{ \"description\": \"\", \"id\": \"100\", \"name\": \"Grasp of Doom\",
-\"property_names\": \[ \"Name\", \"Rarity\", \"Type\" \],
-\"property_types\": \[ \"0x1::string::String\", \"0x1::string::String\",
-\"0x1::string::String\" \], \"property_values_bytes\": \[
-\"0x0d4772617370206f6620446f6f6d\", \"0x0472617265\", \"0x0443617264\"
-\], \"uri\":
-\"https://cdn.darkcountry.io/ChangelingsCards/NoSlot/graspofdoom.png\" }
+```
+{
+  "description": "",
+  "id": "100",
+  "name": "Grasp of Doom",
+  "property_names": [
+    "Name",
+    "Rarity",
+    "Type"
+  ],
+  "property_types": [
+    "0x1::string::String",
+    "0x1::string::String",
+    "0x1::string::String"
+  ],
+  "property_values_bytes": [
+    "0x0d4772617370206f6620446f6f6d",
+    "0x0472617265",
+    "0x0443617264"
+  ],
+  "uri": "https://cdn.darkcountry.io/ChangelingsCards/NoSlot/graspofdoom.png"
+}
+```
 
 B. Minter - module responsible for token minting, other modules refer to
 it
