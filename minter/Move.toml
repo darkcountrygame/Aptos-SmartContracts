@@ -1,0 +1,13 @@
+[package]
+name = "minter"
+version = "1.0.0"
+authors = []
+
+[addresses]
+creator_addr='0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303'
+staker_addr='0x9d7d9517f3bf5b29d98090d9add99aa8b7c38402ecd0837461240e869347ec78'
+unpacker_addr='0xbf91191a84b336bfdd78a7631dc6c2c52de126567ff068339894982b9469fa99'
+market_addr='0x695c7cb4ae9ba2addfeacad5bf99680f17c0b706cfc7e4189ce207e64cb90b'
+
+[dependencies]
+TemplatesStorage = {local = "../templates_store"}

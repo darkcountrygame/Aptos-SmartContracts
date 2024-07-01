@@ -1,0 +1,12 @@
+[package]
+name = "staking"
+version = "1.0.0"
+authors = []
+
+[addresses]
+creator_addr='0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303'
+collection_creator_addr='0xb99ba9be26585fad9163fea1c4755c997b3bfe50c70b1db3ca476b9631e46689'
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "mainnet" }
+AptosToken = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-token", rev = "mainnet" }
