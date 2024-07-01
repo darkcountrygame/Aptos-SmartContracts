@@ -24,41 +24,30 @@ Part 1. Smart Contracts.
 Part 1. Smart Contracts. 
 -------------------------
 
-Note. A testnet contract is deployed at 0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303 address, if you like to have a look and play with it as end user, however we offer demo website that also showcases all of the functionality.
+Note. A testnet contract is deployed at **0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303** address, if you like to have a look and play with it as end user, however we offer demo website that also showcases all of the functionality.
 
 A. templates - module that stores and provides access to all templates. The main structure used by this module is Template
 
 ```
-
 struct  Template  has  store, drop, copy
-
 {
-
-id: u64,
-
-name: String,
-
-description: String,
-
-uri: String,
-
-property_names: vector<String>,
-
-property_types: vector<String>,
-
-property_values_bytes: vector<vector<u8>>
-
+  id: u64,
+  name: String,
+  description: String,
+  uri: String,
+  property_names: vector<String>,
+  property_types: vector<String>,
+  property_values_bytes: vector<vector<u8>>
 }
-
 ```
 
 For example, if we want to create a Rectangle token with fields height=6 and width=8, then the corresponding arrays will be as follows (the format and method toBytes() below are conditional). All fields in templates created with templates::add_templates are of type String.
 
+```
 property_names = ["height", "width"]
-
 property_types = ["u64", "u64"]
-
 property_values_bytes = [toBytes(6), toBytes(8)]
+```
 
 \[main method\] templates::add_template(creator: &signer, template_id:
 u64, name: String, description: String, uri: String, property_names:
