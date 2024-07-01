@@ -319,20 +319,16 @@ Example of a returned value drops::get_sales()
 Modules required to set up work with Aptos.
 
 ```
-import { Aptos, AptosConfig, Network, Account, Ed25519PrivateKey} from
-\"@aptos-labs/ts-sdk\";
+import { Aptos, AptosConfig, Network, Account, Ed25519PrivateKey} from "@aptos-labs/ts-sdk";
 
-const aptosConfig = new AptosConfig({ network: Network.TESTNET }); const
-aptos = new Aptos(aptosConfig);
+const aptosConfig = new AptosConfig({ network: Network.TESTNET });
+const aptos = new Aptos(aptosConfig);
 
-const module_address =
-\"0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303\";
-const owner_address =
-\"0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303\";
+const module_address = "0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303";
+const owner_address = "0x1ac6713de2cf42540ec69783ed0efe12e363fc0161653b9059008950d6bd0303";
 
-const owner_private_key = new Ed25519PrivateKey(PRIVATE_KEY); const
-owner_account = Account.fromPrivateKey({ privateKey: owner_private_key
-});
+const owner_private_key = new Ed25519PrivateKey(PRIVATE_KEY);
+const owner_account = Account.fromPrivateKey({ privateKey: owner_private_key });
 ```
 
 How transactions are built and executed
@@ -352,21 +348,38 @@ for a transaction, but are called using aptos.view().
 
 JS Code examples on how to use every module that is described.
 
-1\. Templates
+- 1 .Templates
 
-1\. template::get_template(template_id=100)
+```template::get_template(template_id=100```
 
-const unpackedTokens = await aptos.view({ payload: { function:
-\`\${module_address}::templates::get_template\`, typeArguments: \[\],
-functionArguments: \[100\], }, });
+```
+const unpackedTokens = await aptos.view({
+     payload: {
+       function: `${module_address}::templates::get_template`,
+       typeArguments: [],
+       functionArguments: [100],
+     },
+   });
+```
 
-2\. Minting process
+- 2. Minting process
 
-1\. minter::mint_template(account=owner_account, to=owner_address,
-template_id=365) onst transaction = await
-aptos.transaction.build.simple( { sender: owner_account.accountAddress,
-data: { function: \`\${module_address}::minter::mint_template\`,
-functionArguments: \[ owner_address, 355 \] } } );
+```minter::mint_template(account=owner_account, to=owner_address, template_id=365)```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: owner_account.accountAddress,
+       data: {
+         function: `${module_address}::minter::mint_template`,
+         functionArguments: [
+           owner_address,
+           355
+         ]
+       }
+     }
+   );
+```
 
 3\. Staking
 
