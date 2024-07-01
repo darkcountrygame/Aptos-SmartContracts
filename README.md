@@ -331,7 +331,7 @@ const owner_private_key = new Ed25519PrivateKey(PRIVATE_KEY);
 const owner_account = Account.fromPrivateKey({ privateKey: owner_private_key });
 ```
 
-How transactions are built and executed
+**How transactions are built and executed**
 
 Each transaction in the examples provided will be created using the
 ```transaction = aptos.transaction.build.simple()``` method. After that, the
@@ -348,7 +348,7 @@ for a transaction, but are called using aptos.view().
 
 JS Code examples on how to use every module that is described.
 
-- 1 .Templates
+**- 1 .Templates**
 
 ```template::get_template(template_id=100```
 
@@ -362,7 +362,7 @@ const unpackedTokens = await aptos.view({
    });
 ```
 
-- 2. Minting process
+**- 2. Minting process**
 
 ```minter::mint_template(account=owner_account, to=owner_address, template_id=365)```
 
@@ -381,72 +381,188 @@ const transaction = await aptos.transaction.build.simple(
    );
 ```
 
-3\. Staking
+**- 3. Staking**
+```staking::stake_tokens```
 
-1\. staking::stake_tokens const transaction = await
-aptos.transaction.build.simple( { sender: owner_account.accountAddress,
-data: { function: \`\${module_address}::staking::stake_tokens\`,
-functionArguments: \[ \[\"#11\", \"#9\"\] \] } } );
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: owner_account.accountAddress,
+       data: {
+         function: `${module_address}::staking::stake_tokens`,
+         functionArguments: [
+           ["#11", "#9"]
+         ]
+       }
+     }
+   );
+```
 
-2\. staking::unstake_tokens const transaction = await
-aptos.transaction.build.simple( { sender: owner_account.accountAddress,
-data: { function: \`\${module_address}::staking::unstake_tokens\`,
-functionArguments: \[ \[\"#11\", \"#9\"\] \] } } );
+```staking::unstake_tokens```
 
-3\. staking::get_staked_tokens const unpackedTokens = await aptos.view({
-payload: { function: \`\${module_address}::staking::get_staked_tokens\`,
-typeArguments: \[\], functionArguments:
-\[owner_account.accountAddress\], }, });
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: owner_account.accountAddress,
+       data: {
+         function: `${module_address}::staking::unstake_tokens`,
+         functionArguments: [
+           ["#11", "#9"]
+         ]
+       }
+     }
+   );
+```
 
-4\. Unpacking
+```staking::get_staked_tokens```
 
-1\. unpacking::unpack const transaction = await
-aptos.transaction.build.simple( { sender: owner_account.accountAddress,
-data: { function: \`\${module_address}::unpacking::unpack\`,
-functionArguments: \[ pack_token_name \] } } );
+```const unpackedTokens = await aptos.view({
+     payload: {
+       function: `${module_address}::staking::get_staked_tokens`,
+       typeArguments: [],
+       functionArguments: [owner_account.accountAddress],
+     },
+   });
+```
 
-2\. unpacking::claim const transaction = await
-aptos.transaction.build.simple( { sender: owner_account.accountAddress,
-data: { function: \`\${module_address}::unpacking::claim\`,
-functionArguments: \[
+**- 4. Unpacking**
+ 
+```unpacking::unpack```
 
-\] } } );
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: owner_account.accountAddress,
+       data: {
+         function: `${module_address}::unpacking::unpack`,
+         functionArguments: [
+           pack_token_name
+         ]
+       }
+     }
+   );
+```
 
-3\. unpacking::get_unpacked_tokens const unpackedTokens = await
-aptos.view({ payload: { function:
-\`\${module_address}::unpacking::get_unpacked_tokens\`, typeArguments:
-\[\], functionArguments: \[owner_account.accountAddress\], }, });
+```unpacking::claim```
 
-5\. Drops
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: owner_account.accountAddress,
+       data: {
+         function: `${module_address}::unpacking::claim`,
+         functionArguments: [
 
-1\. drops::create_sale const transaction = await
-aptos.transaction.build.simple( { sender: owner_account.accountAddress,
-data: { function: \`\${module_address}::drops::create_sale\`,
-functionArguments: \[ \"test\", \"descr\", 0, 0, 4, 153, 1000 \] } } );
 
-2\. drops::buy const transaction = await aptos.transaction.build.simple(
-{ sender: not_owner_account.accountAddress, data: { function:
-\`\${module_address}::drops::buy\`, functionArguments: \[ sale_id \] } }
-);
+         ]
+       }
+     }
+   );
+```
 
-3\. drops::buy_multiple const transaction = await
-aptos.transaction.build.simple( { sender:
-not_owner_account.accountAddress, data: { function:
-\`\${module_address}::drops::buy_multiple\`, functionArguments: \[
-sale_id, 4 \] } } );
+```unpacking::get_unpacked_tokens```
 
-4\. drops::get_sales const allSales = await aptos.view({ payload: {
-function: \`\${module_address}::drops::get_sales\`, typeArguments: \[\],
-functionArguments: \[\], }, });
+```
+const unpackedTokens = await aptos.view({
+     payload: {
+       function: `${module_address}::unpacking::get_unpacked_tokens`,
+       typeArguments: [],
+       functionArguments: [owner_account.accountAddress],
+     },
+   });
+```
 
-5\. drops::update_sale_name const transaction = await
-aptos.transaction.build.simple( { sender:
-not_owner_account.accountAddress, data: { function:
-\`\${module_address}::drops::update_sale_name\`, functionArguments: \[
-sale_id, \"Some New Name\" \] } } );
+- 5. Drops
+ 
+```drops::create_sale```
 
-6\. drops::delete_sale const transaction = await
-aptos.transaction.build.simple( { sender:
-not_owner_account.accountAddress, data: { function:
-\`\${module_address}::drops::delete_sale\`, functionArguments: \[
-sale_id \] } } );
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: owner_account.accountAddress,
+       data: {
+         function: `${module_address}::drops::create_sale`,
+         functionArguments: [
+           "test", "descr", 0, 0, 4, 153, 1000
+         ]
+       }
+     }
+   );
+```
+
+```drops::buy```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::drops::buy`,
+         functionArguments: [
+           sale_id
+         ]
+       }
+     }
+   );
+```
+
+```drops::buy_multiple```
+
+```
+const transaction = await aptos.transaction.build.simple(
+       {
+         sender: not_owner_account.accountAddress,
+         data: {
+           function: `${module_address}::drops::buy_multiple`,
+           functionArguments: [
+             sale_id, 4
+           ]
+         }
+       }
+     );
+```
+     
+```drops::get_sales```
+
+```
+const allSales = await aptos.view({
+     payload: {
+       function: `${module_address}::drops::get_sales`,
+       typeArguments: [],
+       functionArguments: [],
+     },
+   });
+```
+
+```drops::update_sale_name```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::drops::update_sale_name`,
+         functionArguments: [
+           sale_id, "Some New Name"
+         ]
+       }
+     }
+   );
+```
+
+```drops::delete_sale```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::drops::delete_sale`,
+         functionArguments: [
+           sale_id
+         ]
+       }
+     }
+   );
+```
+
