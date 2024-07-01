@@ -58,6 +58,7 @@ vector <String>, property_values: vector <String>)
 
 - returns the fields of
 the template according to the given id (Template structure)
+
 ```templates::get_template(id: u64) ```
 
 Example of returned values templates::get_template(id=100)
@@ -88,13 +89,19 @@ Example of returned values templates::get_template(id=100)
 B. Minter - module responsible for token minting, other modules refer to
 it
 
-\[main method\] minter::mint_template(account: &signer, to: address,
-template_id: u64) - minting the token according to the template_id to
+ - minting the token according to the template_id to
 the address to. Can only be called by the contract owner and other
 modules.
+```
+minter::mint_template(account: &signer, to: address,
+template_id: u64)
+```
 
-\[view method\] minter::get_collection_creator_object() - returns the
+- returns the
 address of the account to which the collection is registered.
+```
+[view method] minter::get_collection_creator_object() 
+```
 
 C. Staking - module for staking and unstaking of tokens(NFTs). Staking
 means transferring tokens to contract account.
