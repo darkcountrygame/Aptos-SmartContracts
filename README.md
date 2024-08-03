@@ -357,7 +357,6 @@ market::update_sale_name(account: &signer, sale_id: u64, new_name: String)
 market::update_sale_description(account: &signer, sale_id: u64, new_description: String)
 
 market::update_sale_price(account: &signer, sale_id: u64, new_price: u64)
-
 ```
 
 - these methods are used to set collection and marketplace fees. They can be invoked only by @host, @dev and @server.
@@ -401,6 +400,32 @@ Here's an example of returned sales
     ]
   }
 ]
+```
+
+**G. SDM** - SDM token module.
+
+- transfers ```amount``` SDM tokens from ```account``` to ```to```.
+
+```
+[main method] sdm::transfer(account: &signer, to: address, amount: u64)
+```
+
+- registers a TokenStore for ```account```. It's necessary to invoke this method before all the token operations, as they will result in an error.
+
+```
+[main method] sdm::register(account: &signer)
+```
+
+- mints ```amount``` SDM tokens to @token account. Can be invoked only by @token account.
+
+```
+[main method] sdm::mint(account: &signer, amount: u64)
+```
+
+- burns ```amount``` SDM token from @token account. Can be invoked obly by @token account.
+
+```
+[main method] sdm::burn(account: &signer, amount: u64)
 ```
 
 **JS examples of calling module methods**
