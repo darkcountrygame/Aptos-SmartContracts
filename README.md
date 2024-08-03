@@ -773,3 +773,63 @@ const allSales = await aptos.view({
      },
    });
 ```
+
+- 7. SDM
+ 
+```sdm::transfer```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::sdm::transfer`,
+         functionArguments: [
+"0x3790240aa9d7400d42d99181e0f2364c84d7ef8e9639b99151132a631b11e7d4", 1000
+         ]
+       }
+     }
+   );
+```
+
+```sdm::register```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::sdm::register`,
+         functionArguments: []
+       }
+     }
+   );
+```
+
+```sdm::mint```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::sdm::mint`,
+         functionArguments: [1000]
+       }
+     }
+   );
+```
+
+```sdm::burn```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::sdm::burn`,
+         functionArguments: [1000]
+       }
+     }
+   );
+```
