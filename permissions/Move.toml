@@ -1,0 +1,18 @@
+[package]
+name = "permissions"
+version = "1.0.0"
+authors = []
+
+[addresses]
+dev='0x3790240aa9d7400d42d99181e0f2364c84d7ef8e9639b99151132a631b11e7d4'
+server='0xeb384a34f82ed0dc2c54b19a192f8c068e98d2fecd5079a76347ac18a6ad7466'
+host='0xf20db06e2756e5d933b9d7295573fab0a69bc6c012d438b6c92f349e70ba4a32'
+
+unpacker='0x58744b5954a1a5da8ceecdda4ceedd8f63246137b31c7c57c9da0102e2f16932'
+drops='0xde2e981d455e2d8ff2f6147fcd68b4e8f0b84bb907e3ea9773cafdc61fbb7840'
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+

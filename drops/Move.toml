@@ -1,12 +1,16 @@
 [package]
-name = "minter"
+name = "drops"
 version = "1.0.0"
 authors = []
 
 [addresses]
 dev='0x3790240aa9d7400d42d99181e0f2364c84d7ef8e9639b99151132a631b11e7d4'
 host='0xf20db06e2756e5d933b9d7295573fab0a69bc6c012d438b6c92f349e70ba4a32'
+collection_creator_addr='0x69caa204288ca6d19f455247fbdf1c7dae0e3c4fb2e30a71e92d4e0e3bec32a1'
+
+token='0xf20db06e2756e5d933b9d7295573fab0a69bc6c012d438b6c92f349e70ba4a32'
 
 [dependencies]
-TemplatesStorage = {local = "../templates_store"}
+minter = {local = "../minter"}
+sdm = {local = "../sdm"}
 permissions = {local = "../permissions"}

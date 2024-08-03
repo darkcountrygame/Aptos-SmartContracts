@@ -1,6 +1,8 @@
-module creator_addr::unpacking
+module dev::unpacking
 {
-use creator_addr::minter;
+use dev::permissions;
+use dev::minter;
+use dev::templates;
 
 use std::vector;
 use std::bcs;
@@ -11,9 +13,8 @@ use aptos_framework::transaction_context;
 
 use aptos_framework::event;
 use aptos_framework::account;
-use std::error;
 use std::signer;
-use aptos_framework::account::Account;
+
 use aptos_framework::aptos_account;
 use aptos_framework::object::{Self, ExtendRef, Object};
 
@@ -22,6 +23,8 @@ use std::string::{Self, String, utf8};
 
 use aptos_token::token;
 use aptos_token::property_map;
+
+use aptos_token_objects::token::{Self as tokenv2, Token as TokenV2};
 
 struct MyRefs has key, store {
     extend_ref: ExtendRef,
@@ -43,7 +46,6 @@ fun create_obj_signer(caller: &signer)
     aptos_account::create_account(object_address);
 
     // Store an ExtendRef alongside the object.
-    let object_signer = object::generate_signer(&constructor_ref);
     let extend_ref = object::generate_extend_ref(&constructor_ref);
     
     move_to(
@@ -52,8 +54,9 @@ fun create_obj_signer(caller: &signer)
     );
 }
 
-fun init_module(account: &signer)
+public entry fun init(account: &signer)
 {
+    assert!(permissions::is_host(signer::address_of(account)), 1);
     create_obj_signer(account);
 
     let store = UnpackStore {
@@ -66,11 +69,11 @@ fun init_module(account: &signer)
 
 entry fun claim(account: &signer) acquires MyRefs, UnpackStore
 {
-    let unpack_table = borrow_global_mut<UnpackStore>(@creator_addr);
+    let unpack_table = borrow_global_mut<UnpackStore>(@host);
     let tokens = table::borrow_mut(&mut unpack_table.unpacked_templates, signer::address_of(account));
     let size = vector::length(tokens);
 
-    let my_refs = borrow_global<MyRefs>(@creator_addr);
+    let my_refs = borrow_global<MyRefs>(@host);
     let object_signer = object::generate_signer_for_extending(&my_refs.extend_ref);
 
     for (i in 0..size)
@@ -82,15 +85,49 @@ entry fun claim(account: &signer) acquires MyRefs, UnpackStore
     *tokens = vector::empty<u64>();
 }
 
-public entry fun unpack_any(account: &signer, token_name: String, collection_name: String) acquires UnpackStore
+public entry fun unpack_v2(account: &signer, pack: Object<TokenV2>) acquires UnpackStore
 {
-    let p = get_p(signer::address_of(account), token_name, collection_name);
-    let n = get_n(signer::address_of(account), token_name, collection_name);
-    let packtype = get_packtype(signer::address_of(account), token_name, collection_name);
+    let template_id: u64 = 0;
+    let packtype: String = utf8(b"");
 
-    let tokens = gen_n_ctgr(account, n, p, packtype);
+    //check it's from correct collection
 
-    let unpack_table = borrow_global_mut<UnpackStore>(@creator_addr);
+    assert!(tokenv2::creator(pack) == @wapal_collection_creator, 5);
+    assert!(tokenv2::collection_name(pack) == utf8(b"Dark Country Changeling Packs"), 5);
+
+    //
+
+    let token_name = tokenv2::name(pack);
+    let token_name_length = string::length(&token_name);
+    
+    //pack type check
+
+    template_id = 355;
+    packtype = utf8(b"card");
+
+    assert!(template_id != 0, 5);
+
+    let pack_template = templates::get_template(template_id);
+    let property_values = templates::get_property_values(&pack_template);
+
+    let common = string_to_u64(&from_bcs::to_string(*vector::borrow(&property_values, 3)));
+    let rare = string_to_u64(&from_bcs::to_string(*vector::borrow(&property_values, 4)));
+    let epic = string_to_u64(&from_bcs::to_string(*vector::borrow(&property_values, 5)));
+    let legendary = string_to_u64(&from_bcs::to_string(*vector::borrow(&property_values, 6)));
+    let mythical = string_to_u64(&from_bcs::to_string(*vector::borrow(&property_values, 7)));
+    let quantity = string_to_u64(&from_bcs::to_string(*vector::borrow(&property_values, 8)));
+
+    let probabilities:vector<u64> = vector::empty();
+    vector::push_back(&mut probabilities, common);
+    vector::push_back(&mut probabilities, rare);
+    vector::push_back(&mut probabilities, epic);
+    vector::push_back(&mut probabilities, legendary);
+    vector::push_back(&mut probabilities, mythical);
+
+
+    let tokens = gen_n_ctgr(account, quantity, probabilities, packtype);
+
+    let unpack_table = borrow_global_mut<UnpackStore>(@host);
     let unpacker_address = signer::address_of(account);
 
     if (!table::contains(&unpack_table.unpacked_templates, unpacker_address))
@@ -107,26 +144,29 @@ public entry fun unpack_any(account: &signer, token_name: String, collection_nam
         vector::append(owner_unpacked_templates, tokens);
     };
 
-    let col_creator: address = @collection_creator_addr;
 
-    if (collection_name == utf8(b"packschangelings"))
-    {
-        col_creator = @packs_collection_creator_addr;
-    };
+    object::transfer(account, pack, @host);
+}
 
-    token::burn(account, col_creator, collection_name, token_name, 0, 1);
+#[view]
+public fun unpack_view(pack: Object<TokenV2>): String
+{
+    let token_name = tokenv2::name(pack);
+    let token_name_length = string::length(&token_name);
+    token_name
 }
 
 public entry fun unpack(account: &signer, token_name: String) acquires UnpackStore
 {
-    let changelings_collection = utf8(b"changelings");
+    let changelings_collection = utf8(b"Dark Country");
+    
     let p = get_p(signer::address_of(account), token_name, changelings_collection);
     let n = get_n(signer::address_of(account), token_name, changelings_collection);
     let packtype = get_packtype(signer::address_of(account), token_name, changelings_collection);
 
     let tokens = gen_n_ctgr(account, n, p, packtype);
 
-    let unpack_table = borrow_global_mut<UnpackStore>(@creator_addr);
+    let unpack_table = borrow_global_mut<UnpackStore>(@host);
     let unpacker_address = signer::address_of(account);
 
     if (!table::contains(&unpack_table.unpacked_templates, unpacker_address))
@@ -143,7 +183,7 @@ public entry fun unpack(account: &signer, token_name: String) acquires UnpackSto
         vector::append(owner_unpacked_templates, tokens);
     };
 
-    token::burn(account, @collection_creator_addr, utf8(b"changelings"), token_name, 0, 1);
+    token::burn(account, @collection_creator, utf8(b"Dark Country"), token_name, 0, 1);
 }
 
 fun pseudo_random(add:address, number1:u64, max:u64): u64
@@ -172,7 +212,7 @@ fun pseudo_random(add:address, number1:u64, max:u64): u64
 
     assert!(max > 0,999);
 
-    let random = from_bcs::to_u64(data) % max + 1;
+    let random = from_bcs::to_u64(data) % max;
     random
 }
 
@@ -204,12 +244,7 @@ fun string_to_u64(s: &String): u64
 
 fun get_p(owner: address, token_name: String, collection_name: String): vector<u64>
 {
-    let col_creator: address = @collection_creator_addr;
-
-    if (collection_name == utf8(b"packschangelings"))
-    {
-        col_creator = @packs_collection_creator_addr;
-    };
+    let col_creator: address = @collection_creator;
 
     let token_id = token::create_token_id_raw(col_creator, collection_name, token_name, 0);
     let token_properties = token::get_property_map(owner, token_id);
@@ -233,12 +268,7 @@ fun get_p(owner: address, token_name: String, collection_name: String): vector<u
 
 fun get_n(owner: address, token_name: String, collection_name: String): u64
 {
-    let col_creator: address = @collection_creator_addr;
-
-    if (collection_name == utf8(b"packschangelings"))
-    {
-        col_creator = @packs_collection_creator_addr;
-    };
+    let col_creator: address = @collection_creator;
 
     let token_id = token::create_token_id_raw(col_creator, collection_name, token_name, 0);
     let token_properties = token::get_property_map(owner, token_id);
@@ -250,12 +280,7 @@ fun get_n(owner: address, token_name: String, collection_name: String): u64
 
 fun get_packtype(owner: address, token_name: String, collection_name: String): String
 {
-    let col_creator: address = @collection_creator_addr;
-
-    if (collection_name == utf8(b"packschangelings"))
-    {
-        col_creator = @packs_collection_creator_addr;
-    };
+    let col_creator: address = @collection_creator;
 
     let token_id = token::create_token_id_raw(col_creator, collection_name, token_name, 0);
     let token_properties = token::get_property_map(owner, token_id);
@@ -389,151 +414,6 @@ fun gen_n_ctgr(account: &signer, n: u64, p: vector<u64>, packtype: String): vect
     tokens
 }
 
-fun add_n_ctgr(account: &signer, n: u64, p: vector<u64>): vector<u64>
-{
-    let addr = signer::address_of(account);
-
-    let categories: vector<u64> = vector::empty();
-    let tokens: vector<u64> = vector::empty();
-
-    let total_probability = 0;
-
-    for (i in 0..vector::length<u64>(&p))
-    {
-        total_probability = total_probability + *vector::borrow(&p, i);
-    };
-
-    for (i in 0..n)
-    {
-        let ctgr = gen_category(addr, i, total_probability, p);
-        vector::push_back(&mut categories, ctgr);
-    };
-
-    for (i in 0..n)
-    {
-        let ctgr = *vector::borrow(&categories, i);
-        let token: u64 = 0;
-
-        if (ctgr == 0)
-        {
-            //common -> #41 320-339, 360
-            let item = pseudo_random(addr, i, 41);
-
-            if (item == 40)
-            {
-                //land
-                token = 360;
-            }
-            else
-            {
-                //card
-                token = 320 + item;
-            }
-        }
-        else if (ctgr == 1)
-        {
-            //rare -> #80 0-7, 32-39, 64-71, 96-103, 128-135, 160-167, 192-199, 224-231, 256-263, 288-295, 
-            //rare -> #14 347-359, 361
-
-            let item = pseudo_random(addr, i, 94);
-            if (item == 93)
-            {
-                //land
-                token = 361
-            }
-            else if (item >= 80)
-            {
-                //card 
-                token = 347 + (item - 80);   
-            }
-            else
-            {
-                //hero
-                let r = item % 8;
-                let k = item / 8;
-
-                token = 32*k + r;
-            }
-        }
-        else if (ctgr == 2)
-        {
-            //epic -> #5 340-343, 362
-
-            let item = pseudo_random(addr, i, 85);
-            if (item == 84)
-            {
-                //land
-                token = 362;
-            }
-            else if (item >= 80)
-            {
-                //card 
-                token = 340 + (item - 80);   
-            }
-            else
-            {
-                //hero
-                let r = item % 8;
-                let k = item / 8;
-
-                token = 8 + 32*k + r;
-            }
-        }
-        else if (ctgr == 3)
-        {
-            //legendary -> #3 344-345, 363
-
-            let item = pseudo_random(addr, i, 83);
-            if (item == 82)
-            {
-                //land
-                token = 363;
-            }
-            else if (item >= 80)
-            {
-                //card 
-                token = 344 + (item - 80);   
-            }
-            else
-            {
-                //hero
-                let r = item % 8;
-                let k = item / 8;
-
-                token = 16 + 32*k + r;
-            }
-        }
-        else if (ctgr == 4)
-        {
-            //mythical -> #2 346, 364
-
-            let item = pseudo_random(addr, i, 82);
-            if (item == 81)
-            {
-                //land
-                token = 364;
-            }
-            else if (item >= 80)
-            {
-                //card 
-                token = 346 + (item - 80);   
-            }
-            else
-            {
-                //hero
-                let r = item % 8;
-                let k = item / 8;
-
-                token = 24 + 32*k + r;
-            }
-        };
-
-        vector::push_back(&mut tokens, token);
-    };
-
-    tokens
-}
-
 public fun gen_category(addr: address, seed: u64, d: u64, p: vector<u64>): u64
 {
     let sample = pseudo_random(addr, seed, d);
@@ -557,14 +437,14 @@ public fun gen_category(addr: address, seed: u64, d: u64, p: vector<u64>): u64
 #[view]
 public fun get_unpacked_tokens(unpacker_address: address): vector<u64> acquires UnpackStore
 {
-    let unpack_table = borrow_global<UnpackStore>(@creator_addr);
+    let unpack_table = borrow_global<UnpackStore>(@host);
     *table::borrow(&unpack_table.unpacked_templates, unpacker_address)
 }
 
 #[view]
 public fun get_unpacker_object_addr(): address acquires MyRefs
 {
-    let my_refs = borrow_global<MyRefs>(@creator_addr);
+    let my_refs = borrow_global<MyRefs>(@host);
     let object_signer = object::generate_signer_for_extending(&my_refs.extend_ref);
     signer::address_of(&object_signer)
 }

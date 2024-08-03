@@ -1,12 +1,12 @@
-module creator_addr::minter 
+module dev::minter 
 {
-use creator_addr::templates;
+use dev::templates;
+use dev::permissions;
 
-use std::error;
 use std::signer;
-use aptos_framework::account::Account;
+
 use aptos_framework::aptos_account;
-use aptos_framework::object::{Self, ExtendRef, Object};
+use aptos_framework::object::{Self, ExtendRef};
 
 use std::string::{Self, utf8, String};
 use aptos_token::token;
@@ -25,6 +25,16 @@ struct CollectionData has key
     minted_tokens_count: u64,
 }
 
+struct MyRefs2 has key, store {
+    extend_ref: ExtendRef,
+}
+
+struct CollectionData2 has key
+{
+    collection_name: String,
+    minted_tokens_count: u64,
+}
+
 fun create_obj_signer(caller: &signer)
 {
     let caller_address = signer::address_of(caller);
@@ -35,26 +45,26 @@ fun create_obj_signer(caller: &signer)
     aptos_account::create_account(object_address);
 
     // Store an ExtendRef alongside the object.
-    let object_signer = object::generate_signer(&constructor_ref);
     let extend_ref = object::generate_extend_ref(&constructor_ref);
     
     move_to(
       caller,
-      MyRefs { extend_ref: extend_ref },
+      MyRefs2 { extend_ref: extend_ref },
     );
 }
 
-fun init_module(account: &signer) acquires MyRefs
+public entry fun init(account: &signer) acquires MyRefs2
 {
+    assert!(permissions::is_host(signer::address_of(account)), 1);
     create_obj_signer(account);
-    let my_refs = borrow_global<MyRefs>(@creator_addr);
+    let my_refs = borrow_global<MyRefs2>(@host);
     let object_signer = object::generate_signer_for_extending(&my_refs.extend_ref);
     
     //create collection
 
-    let collection_name = string::utf8(b"changelings");
-    let collection_description = string::utf8(b"");
-    let collection_uri = string::utf8(b"");
+    let collection_name = string::utf8(b"Dark Country");
+    let collection_description = string::utf8(b"This is Dark Country Changelings collection. There are packs, cards, heroes and lands in this collection. Each pack contains game items, depends on pack type those can be cards, heroes or lands.");
+    let collection_uri = string::utf8(b"https://cdn.darkcountry.io/gold_logo.png");
     let mutate_setting = vector<bool>[true, true, true];
 
     token::create_collection(
@@ -66,29 +76,33 @@ fun init_module(account: &signer) acquires MyRefs
         mutate_setting
     );
 
-    move_to(account, CollectionData {
+    move_to(account, CollectionData2 {
         collection_name: collection_name,
         minted_tokens_count: 0
     });
 }
 
+public entry fun restart(account: &signer) acquires CollectionData2
+{
+    assert!(permissions::is_host(signer::address_of(account)), 1);
+    let collection_data = borrow_global_mut<CollectionData2>(@host);
+    collection_data.minted_tokens_count = 0;
+}
+
 //mint_template
 
-public entry fun mint_template(caller: &signer, to:address, template_id: u64) acquires CollectionData, MyRefs
+public entry fun mint_template(caller: &signer, to:address, template_id: u64) acquires CollectionData2, MyRefs2
 {
-    let is_unpacker: bool = signer::address_of(caller) == @unpacker_addr;
-    let is_creator: bool = signer::address_of(caller) == @creator_addr;
-    let is_market: bool = signer::address_of(caller) == @market_addr;
-    assert!(is_unpacker || is_creator || is_market, 1);
-
+    assert!(permissions::check_mint_permissions(signer::address_of(caller)), 1);
+    
     mint_template_internal(to, template_id);
 }
 
-fun mint_template_internal(to: address, template_id: u64) acquires CollectionData, MyRefs
+fun mint_template_internal(to: address, template_id: u64) acquires CollectionData2, MyRefs2
 {
     let template = templates::get_template(template_id);
-    let module_data_mut = borrow_global_mut<CollectionData>(@creator_addr);
-    let my_refs = borrow_global<MyRefs>(@creator_addr);
+    let module_data_mut = borrow_global_mut<CollectionData2>(@host);
+    let my_refs = borrow_global<MyRefs2>(@host);
     let object_signer = object::generate_signer_for_extending(&my_refs.extend_ref);
 
     let token_mutability_settings = vector<bool>[true, true, true, true, true];
@@ -123,9 +137,9 @@ fun mint_template_internal(to: address, template_id: u64) acquires CollectionDat
         description,
         0, //maximum amount
         uri,
-        @creator_addr, //payee address
-        3, //denominator
-        1, //numinator
+        @host, //payee address
+        100, //denominator
+        5, //numinator
         token::create_token_mutability_config(&token_mutability_settings),
         property_names,
         property_values,
@@ -141,9 +155,9 @@ fun mint_template_internal(to: address, template_id: u64) acquires CollectionDat
 }
 
 #[view]
-public fun get_collection_creator_object(): address acquires MyRefs
+public fun get_collection_creator_object(): address acquires MyRefs2
 {
-    let my_refs = borrow_global<MyRefs>(@creator_addr);
+    let my_refs = borrow_global<MyRefs2>(@host);
     let object_signer = object::generate_signer_for_extending(&my_refs.extend_ref);
     signer::address_of(&object_signer)
 }

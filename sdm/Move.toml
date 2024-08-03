@@ -1,0 +1,10 @@
+[package]
+name = "sdm"
+version = "1.0.0"
+authors = []
+
+[addresses]
+token='0xf20db06e2756e5d933b9d7295573fab0a69bc6c012d438b6c92f349e70ba4a32'
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "mainnet" }
