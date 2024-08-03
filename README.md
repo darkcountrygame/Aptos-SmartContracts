@@ -224,6 +224,7 @@ struct Sale has copy, drop, store
    price: u64,
    name: String,
    description: String,
+   token_type: String
 }
 ```
 
@@ -232,7 +233,7 @@ parameters. Can only be invoked by a contract.
 ```
 [main method] drops::create_sale(account: &signer, name: String,
 description: String, start_time: u64, end_time: u64, count: u64,
-template_id: u64, price: u64)
+template_id: u64, price: u64, token_type: String)
 ```
 
  - deletes the sale with the given id. Can only be invoked by a contract
@@ -292,7 +293,8 @@ Example of a returned value drops::get_sales()
     "name": "Changelings Pack",
     "price": "1000",
     "start_time": "0",
-    "template_id": "355"
+    "template_id": "355",
+    "token_type" : "APT"
   },
   {
     "count": "0",
@@ -303,6 +305,7 @@ Example of a returned value drops::get_sales()
     "price": "1000",
     "start_time": "0",
     "template_id": "153"
+    "token_type" : "SDM"
   },
 ]
 ```
