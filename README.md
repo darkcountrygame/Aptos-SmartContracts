@@ -315,6 +315,93 @@ Example of a returned value drops::get_sales()
 [view method] drops::get_signer_obj_addr()
 ```
 
+**F. Market** - secondary market module, where users can sell their tokens
+
+Main structure in Market contract is also Sale.
+
+```
+struct Sale has store, drop, copy
+{
+    id: u64,
+    seller: address,
+    name: String,
+    description: String,
+    tokens: vector<String>,
+    price: u64,
+    token_type: String
+}
+```
+
+- creates a new sale with specified parameters. NFTs are withdrawn from seller.
+
+```
+[main method] market::create_sale(account: &signer, name: String, description: String, tokens: vector<String>, price: u64, token_type: String)
+```
+
+- deletes a sale with given id. Can only be invoked by seller account. NFTs are returned to seller.
+  
+```
+[main method] market::delete_sale(account: &signer, sale_id: u64)
+```
+
+- buys NFTs, represented in the sale. APT/SDM Tokens are sent to the seller account and also to 2 other account collecting marketplace and collection fees. NFTs are sent to the buyer account.
+
+```
+[main method] market::buy(buyer: &signer, sale_id: u64)
+```
+- these methods can modify fields of a sale. Only seller account can invoke them.
+
+```
+market::update_sale_name(account: &signer, sale_id: u64, new_name: String)
+
+market::update_sale_description(account: &signer, sale_id: u64, new_description: String)
+
+market::update_sale_price(account: &signer, sale_id: u64, new_price: u64)
+
+```
+
+- these methods are used to set collection and marketplace fees. They can be invoked only by @host, @dev and @server.
+
+```
+market::set_collection_fee(account: &signer, collection_fee_numerator: u64, collection_fee_denominator: u64)
+
+market::set_marketplace_fee(account: &signer, marketplace_fee_numerator: u64, marketplace_fee_denominator: u64)
+```
+
+- returns all the active sales
+
+```
+[view method] market::get_sales()
+```
+
+Here's an example of returned sales
+
+```
+[
+  {
+    "description": "desc",
+    "id": "1722588551256029",
+    "name": "name",
+    "price": "1000",
+    "seller": "0x6c377fbf21ff4fda0c7f203b3ab37dfdd61aca8842dec10fd61321d60168dea1",
+    "token_type": "APT",
+    "tokens": [
+      "#73"
+    ]
+  },
+  {
+    "description": "Desc",
+    "id": "1722589506633195",
+    "name": "#60",
+    "price": "1",
+    "seller": "0xba8369c6946ddb9f15b6242186dd80f6dee26cf928a904a765cab6f4cc897cf5",
+    "token_type": "APT",
+    "tokens": [
+      "#60"
+    ]
+  }
+]
+```
 
 **JS examples of calling module methods**
 
