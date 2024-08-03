@@ -597,7 +597,7 @@ const transaction = await aptos.transaction.build.simple(
        data: {
          function: `${module_address}::drops::create_sale`,
          functionArguments: [
-           "test", "descr", 0, 0, 4, 153, 1000
+           "test", "descr", 0, 0, 4, 153, 1000, "APT"
          ]
        }
      }
@@ -680,3 +680,96 @@ const transaction = await aptos.transaction.build.simple(
    );
 ```
 
+- 6. Market
+
+```market::create_sale```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::market::create_sale`,
+         functionArguments: [
+           "name", "description", ["#1", "#2", "#3"], 1000, "SDM"
+         ]
+       }
+     }
+   );
+```
+
+```market::delete_sale```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::market::delete_sale`,
+         functionArguments: [
+           1722588551256029
+         ]
+       }
+     }
+   );
+```
+
+```market::buy```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::market::buy`,
+         functionArguments: [
+           1722588551256029
+         ]
+       }
+     }
+   );
+```
+
+```market::update_sale_name```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::market::update_sale_name`,
+         functionArguments: [
+           1722588551256029, "new name"
+         ]
+       }
+     }
+   );
+```
+
+```market::set_collection_fee```
+
+```
+const transaction = await aptos.transaction.build.simple(
+     {
+       sender: not_owner_account.accountAddress,
+       data: {
+         function: `${module_address}::market::set_collection_fee`,
+         functionArguments: [
+           5, 100
+         ]
+       }
+     }
+   );
+```
+
+```market::get_sales```
+
+```
+const allSales = await aptos.view({
+     payload: {
+       function: `${module_address}::market::get_sales`,
+       typeArguments: [],
+       functionArguments: [],
+     },
+   });
+```
